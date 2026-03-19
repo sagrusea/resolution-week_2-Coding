@@ -1,0 +1,8 @@
+#money_button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+#money_button:active {
+    filter: brightness(0.9);
+}
