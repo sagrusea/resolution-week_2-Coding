@@ -6,15 +6,16 @@
     <link rel="stylesheet" href="main.css" />
   </head>
   <body>
-    <main>
+    <main class="game_layout">
         <aside class="stats"></aside>
-        <section class="game_area"></section>
+        <section class="game_area">
+            <p class="money">Money: $<span id="money">0</span></p>
+            <button id="money_button">
+                <img src="../Imgs/Coin_0.png" alt="coin" width="200">
+            </button>
+        </section>
         <aside class="shop_area"></aside>
     </main>
-    <p>Money: $<span id="money">0</span></p>
-    <button id="money_button">
-        <img src="/Imgs/Coin_0.png" alt="coin" width="200">
-    </button>
     <script src="main.js"></script>
   </body>
 </html>

@@ -2,7 +2,23 @@
     background: transparent;
     border: none;
     cursor: pointer;
+    margin-top: 10vh;
 }
 #money_button:active {
     filter: brightness(0.9);
+}
+.money {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 4vh;
+}
+.game_layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    align-items: start;
+}
+.game_area {
+    text-align: center;
 }
