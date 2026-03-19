@@ -48,11 +48,22 @@ const shop_items_buildings = [
     }
 ]
 let money = 0
+let itemsOwned = []
 
 function button_click(){
     money++
     money_counter.textContent = money;
 }
+
+setInterval(() => {
+    const jarOwned = itemsOwned.find((i) => i.name === "Loose change Jar");
+    if (jarOwned) {
+        for (let i = 0; i < jarOwned.amount; i++) {
+            button_click();
+        }
+    }
+
+}, 1000)
 
 function createShopItems() {
     // delete upgrades
@@ -77,20 +88,25 @@ function createShopItems() {
         shopContainer.appendChild(shop_items_buildings);
     })
 }
-function buyItem() {
-    const item = shop_items_buildings.find((i) => i.name === item.name);
+function buyItem(itemName) {
+    const item = shop_items_buildings.find((i) => i.name === itemName);
     if (money >= item.cost) {
         money -= item.cost;
-        money_counter = money;
+        money_counter.textContent = money;
         let amount = 1;
 
         const itemInArray = itemsOwned.find((obj) => obj.name === item.name);
         if (itemInArray) {
             itemInArray.amount++;
-            console.log('found ')
+            console.log('found ${item.name}, added 1!');
+            amount = itemInArray.amount;
+        } else {
+            itemsOwned.push({ name: item.name, amount: 1});
         }
 
 
+    } else {
+        console.log('not enough money');
     }
 }
 createShopItems();
