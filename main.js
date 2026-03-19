@@ -1,5 +1,6 @@
 const money_counter = document.getElementById("money");
 const money_button = document.getElementById("money_button");
+const cps_counter = document.getElementById("cps")
 const shopContainer = document.querySelector(".shop_area");
 const shop_items_upgrades = [
     {
@@ -46,9 +47,11 @@ const shop_items_buildings = [
         cost: 50,
         startingCost:50,
     }
-]
-let money = 0
-let itemsOwned = []
+];
+let money = 0;
+let cps = 0;
+let itemsOwned = [];
+createShopItems();
 
 function button_click(){
     money++
@@ -76,13 +79,13 @@ function createShopItems() {
         shop_items_upgrades.className = "shop-building";
 
         shop_items_buildings.innerHTML = `
-            <div>
+            <div class="shop_upgrade">
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
+                <button onclick="buyItem('${item.name}')">
+                    Buy $${item.cost}
+                </button>
             </div>
-            <button onclick="buyItem('${item.name}')">
-                Buy $${item.cost}
-            </button>
         `;
 
         shopContainer.appendChild(shop_items_buildings);
@@ -109,7 +112,6 @@ function buyItem(itemName) {
         console.log('not enough money');
     }
 }
-createShopItems();
 money_button.addEventListener('click', function(){
     button_click();
 });

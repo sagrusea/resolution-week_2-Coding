@@ -22,3 +22,8 @@
 .game_area {
     text-align: center;
 }
+.shop_upgrade {
+    padding: 5px;
+    border: 1px solid brown;
+    border-radius: 5px;
+}
