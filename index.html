@@ -1,7 +1,8 @@
 <!doctype html>
-<html>
+<html lang="EN">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Money Clicker</title>
     <link rel="stylesheet" href="main.css" />
   </head>
@@ -10,9 +11,9 @@
         <aside class="stats"></aside>
         <section class="game_area">
             <p class="money">Money: $<span id="money">0</span></p>
-            <p><span id="cps"> Cps</span></p>
-            <button id="money_button">
-                <img src="./Imgs/Coin_0.png" alt="coin" width="200">
+            <p><span id="cps"></span> Cps</p>
+            <button class="selector" id="money_button">
+                <img id="coinImg" class="selector" src="./Imgs/Coin_0.png" alt="coin">
             </button>
         </section>
         <aside class="shop_area">

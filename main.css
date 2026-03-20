@@ -7,10 +7,24 @@
 #money_button:active {
     filter: brightness(0.9);
 }
+#money_button img {
+    width: 200px;
+}
+#money_button:active img {
+    width: 190px;
+}
 .money {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
     font-size: 4vh;
+}
+.selector {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 .game_layout {
     display: grid;
@@ -22,7 +36,7 @@
 .game_area {
     text-align: center;
 }
-.shop_upgrade {
+.shop_upgrade, .shop_building {
     padding: 5px;
     border: 1px solid brown;
     border-radius: 5px;
