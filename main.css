@@ -36,8 +36,33 @@
 .game_area {
     text-align: center;
 }
-.shop_upgrade, .shop_building {
+.upgrades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 8px;
+    padding: 10px;
+}
+.shop_building {
     padding: 5px;
     border: 1px solid brown;
     border-radius: 5px;
+}
+.shop-upgrade {
+    width: 60px;
+    height: 60px;
+    border: 2px solid brown;
+    border-radius:  10px;
+}
+
+.icon {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+}
+
+.upgrade_tooltip {
+    display: none;
+}
+.upgrade_tooltip:hover {
+    display: block;
 }

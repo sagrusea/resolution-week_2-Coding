@@ -25,18 +25,28 @@ const shop_items_upgrades = [
         description: "You take a sip and start being more efficient",
         effect: "clicks are twice as efficient",
         owned: false,
+        imgSrc: "./Imgs/coffe.png",
         multi: 2,
         multiType: "clicks",
-        cost: 10,
-        startingCost: 10
+        cost: 10
+    },
+    {
+        name: "Gold coin",
+        description: "You look at the ground and see a shiny coin",
+        effect: "clicks are twice as efficient",
+        owned: false,
+        imgSrc: "./Imgs/Coin_0.png",
+        multi: 2,
+        multiType: "clicks",
+        cost: 100
     }
 ];
 const shop_items_buildings = [
     {
         name: "Loose change Jar",
         description: "You found it under your couch. It should be enough.",
-        effect: "Clicks 1/s",
-        cps: 1,
+        effect: "Clicks 0.1/s",
+        cps: 0.1,
         cost: 10,
         startingCost: 10,
     },
@@ -94,16 +104,22 @@ function updateCoin(tier) {
 function button_click(){
     let clickValue = 1;
     money += clickValue
-    stats[0].value += clickValue
     updateStats()
 }
 
 setInterval(() => {
-    const jarOwned = itemsOwned.find((i) => i.name === "Loose change Jar");
-    if (jarOwned) {
-        for (let i = 0; i < jarOwned.amount; i++) {
-            button_click();
+    let totalCps = 0;
+    itemsOwned.forEach(ownedItem => {
+        buildingData = shop_items_buildings.find(b => b.name === ownedItem.name);
+        if (buildingData) {
+            totalCps += (buildingData.cps * ownedItem.amount);
+            updateStats();
         }
+    });
+    cps = totalCps;
+    if (cps > 0) {
+        money += cps;
+        stats[0].value += cps;
     }
 
 }, 1000)
@@ -136,18 +152,19 @@ function createShopItems() {
         shop_items_upgrades.className = "shop-upgrade";
 
         shop_items_upgrades.innerHTML = `
-            <div class="shop_upgrade">
-                <h3>${item.name}</h3>
-                <p>${item.description}</p>
-                <button onclick="buyItem('${item.name}')">
-                    Buy $${item.cost}
-                </button>
+            <img class="icon" src="${item.imgSrc}">
+            <div class="upgrade_tooltip">
+                <strong>${item.name}</strong><br>
+                ${item.description}<br>
+                <hr>
+                Cost: $${item.cost}
             </div>
         `;
-
+        shop_items_upgrades.onclick = () => buyItem(item.name);
         upgradesContainer.appendChild(shop_items_upgrades);
     })
 }
+
 function buyItem(itemName) {
     const building = shop_items_buildings.find((i) => i.name === itemName);
     const upgrade = shop_items_upgrades.find((i) => i.name === itemName);
@@ -182,22 +199,7 @@ money_button.addEventListener('click', function(){
     button_click();
 });
 
-function buyBuilding(name) {
-    const item = shop_items_buildings.find((i) => i.name === name);
-    if(money >= item.cost) {
-        money -= item.cost;
-        item.amount++;
-        item.cost = Math.floor(item.cost * 1.15);
-        updateStats();
-        createShopItems;
-    }
-}
-
-function buyUpgrade(name) {
-
-}
-
 function updateStats() {
     money_counter.textContent = Math.floor(money);
-    cps_counter.textContent = cps
+    cps_counter.textContent = cps.toFixed(1);
 }
