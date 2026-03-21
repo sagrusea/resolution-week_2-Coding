@@ -21,6 +21,10 @@ let stats = [
         maxValue: 3
     },
     {
+        name: "buildings bought(total)",
+        value: 0
+    },
+    {
         name: "rebirths",
         value: 0
     }
@@ -113,7 +117,7 @@ const shop_items_buildings = [
     {
         name: "Vending Machine",
         description: "The sound of the coins clinging could be an ASMR",
-        effect: "clicks are now more valuable",
+        effect: "50Cps",
         imgSrc: "./Imgs/buildings/vending.png",
         cps: 50,
         cost: 1000,
@@ -123,11 +127,31 @@ const shop_items_buildings = [
     {
         name: "ATM",
         description: "Money shredder and printer? Yeah that's an ATM",
-        effect: "clicks are now more valuable",
+        effect: "100Cps",
         imgSrc: "./Imgs/buildings/atm.png",
         cps: 100,
         cost: 10000,
         startingCost: 10000,
+        amount: 0,
+    },
+    {
+        name: "Investment",
+        description: "You heard about this from a shady guy on the street. Will it work?",
+        effect: "500Cps",
+        imgSrc: "./Imgs/buildings/invest.png",
+        cps: 500,
+        cost: 35000,
+        startingCost: 35000,
+        amount: 0,
+    },
+    {
+        name: "Bank",
+        description: "A big moment you have enough money. Do you have enough courage to open your first banks?",
+        effect: "1000Cps",
+        imgSrc: "./Imgs/buildings/bank.png",
+        cps: 1000,
+        cost: 500000,
+        startingCost: 500000,
         amount: 0,
     }
 ];
@@ -136,6 +160,7 @@ let moneyMade = 0;
 let cps = 0;
 let itemsOwned = [];
 let clickValue = 1;
+let coinValue = 1;
 createShopItems();
 updateStats();
 loadGame();
@@ -143,18 +168,21 @@ loadGame();
 function updateCoin(tier) {
     switch (tier) {
         case 1:
-            coinImg.src = "Imgs/Coin_1.png"
+            coinImg.src = "Imgs/Coin_1.png";
+            coinValue = 2;
             break;
         case 2:
-            coinImg.src = "Imgs/Coin_2.png"
+            coinImg.src = "Imgs/Coin_2.png";
+            coinValue = 4;
+            break;
         default:
             break;
     }
 }
 
 function button_click(){
-    money += clickValue;
-    stats[0].value += clickValue;
+    money += clickValue * coinValue;
+    stats[0].value += clickValue * coinValue;
     updateStats();
 }
 
@@ -174,6 +202,7 @@ function resetProgress() {
         money = 0;
         clickValue = 1;
         cps = 0;
+        coinValue = 1;
 
         stats.forEach(stat => {
             stat.value = 0;
@@ -201,7 +230,8 @@ function saveGame() {
         stats: stats,
         buildings: shop_items_buildings,
         upgrades: shop_items_upgrades,
-        clickValue: clickValue
+        clickValue: clickValue,
+        coinValue: coinValue
     };
     localStorage.setItem("moneyClickerSave", JSON.stringify(gameData));
     if (savingIndicator) {
@@ -220,6 +250,7 @@ function loadGame() {
         money = data.money;
         clickValue = data.clickValue;
         stats = data.stats;
+        coinValue = data.coinValue;
 
         data.buildings.forEach((savedBld, index) => {
             shop_items_buildings[index].amount = savedBld.amount;
@@ -234,13 +265,15 @@ function loadGame() {
         calcCps();
         createShopItems();
         updateStats();
+        updateCoin(coinValue / 2)
     }
 }
 
 setInterval(() => {
     if (cps > 0) {
-        money += cps;
-        stats[0].value += cps;
+        money += cps * coinValue;
+        stats[0].value += cps * coinValue;
+        stats[1].value = stats[0].value;
         updateStats();
     }
 
@@ -303,6 +336,7 @@ function buyItem(itemName) {
             money -= building.cost;
             building.amount++;
             building.cost = Math.floor(building.cost * 1.2);
+            stats[3].value++
 
             updateStats();
             calcCps();
