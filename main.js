@@ -87,7 +87,7 @@ const shop_items_buildings = [
     {
         name: "Loose change Jar",
         description: "You found it under your couch. It should be enough.",
-        effect: "Clicks 0.1/s",
+        effect: "0.1 Cps",
         imgSrc: "./Imgs/buildings/jar.png",
         cps: 0.1,
         cost: 10,
@@ -155,12 +155,15 @@ const shop_items_buildings = [
         amount: 0,
     }
 ];
+const progressbar = document.getElementById("rebirthProgress");
 let money = 0;
 let moneyMade = 0;
 let cps = 0;
 let itemsOwned = [];
 let clickValue = 1;
 let coinValue = 1;
+let rebirthCost = 50000;
+let rebirthMulti = 1;
 createShopItems();
 updateStats();
 loadGame();
@@ -182,7 +185,7 @@ function updateCoin(tier) {
 
 function button_click(){
     money += clickValue * coinValue;
-    stats[0].value += clickValue * coinValue;
+    stats[0].value += (clickValue * coinValue) * rebirthMulti;
     updateStats();
 }
 
@@ -203,6 +206,7 @@ function resetProgress() {
         clickValue = 1;
         cps = 0;
         coinValue = 1;
+        rebirthMulti = 1;
 
         stats.forEach(stat => {
             stat.value = 0;
@@ -231,7 +235,8 @@ function saveGame() {
         buildings: shop_items_buildings,
         upgrades: shop_items_upgrades,
         clickValue: clickValue,
-        coinValue: coinValue
+        coinValue: coinValue,
+        rebirthMulti: rebirthMulti,
     };
     localStorage.setItem("moneyClickerSave", JSON.stringify(gameData));
     if (savingIndicator) {
@@ -251,6 +256,7 @@ function loadGame() {
         clickValue = data.clickValue;
         stats = data.stats;
         coinValue = data.coinValue;
+        rebirthMulti = data.rebirthMulti;
 
         data.buildings.forEach((savedBld, index) => {
             shop_items_buildings[index].amount = savedBld.amount;
@@ -271,7 +277,7 @@ function loadGame() {
 
 setInterval(() => {
     if (cps > 0) {
-        money += cps * coinValue;
+        money += (cps * coinValue) * rebirthMulti;
         stats[0].value += cps * coinValue;
         stats[1].value = stats[0].value;
         updateStats();
@@ -298,6 +304,8 @@ function createShopItems() {
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
                 <h2>${item.amount}</h2>
+                ${item.effect}
+                <hr>
                 <button onclick="buyItem('${item.name}')">
                     Buy $${item.cost}
                 </button>
@@ -366,10 +374,25 @@ money_button.addEventListener('click', function(){
     button_click();
 });
 
+function rebirth() {
+    if (stats[1].value >= rebirthCost) {
+        console.log("try rebirth")
+        stats[4].value += 1;
+        rebirthMulti += 0.5;
+        resetProgress();
+    } else {return}
+}
+
+function calcRebirth(money, rebirthProgress) {
+    if (money = 0) {return};
+    progressbar.value = (money / rebirthProgress) * 100;
+}
+
 function updateStats() {
     money_counter.textContent = Math.floor(money);
     cps_counter.textContent = cps.toFixed(1);
     statsContainer.innerHTML = "";
+    calcRebirth(stats[1].value, rebirthCost);
 
     stats.forEach((stat) => {
         const statElement = document.createElement("p");
