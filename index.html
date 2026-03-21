@@ -10,7 +10,11 @@
     <main class="game_layout">
         <aside class="stats">
           <button>Rebirth<span id="rebirthAmount"></span></button>
-          <div id="progress"></div>
+          <progress id="rebirthProgress"></progress>
+          <div id="statsContainer">
+
+          </div>
+          <button onclick="resetProgress()">Reset progress</button>
         </aside>
         <section class="game_area">
           <div id="moneyInfo">
@@ -26,6 +30,7 @@
             <hr id="hrUpgrades">
             <div class="buildings"></div>
         </aside>
+        <div id="saveIndicator" class="hidden">Saving...</div>
     </main>
     <script src="main.js"></script>
   </body>

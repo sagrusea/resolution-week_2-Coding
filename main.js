@@ -1,8 +1,10 @@
+const savingIndicator = document.getElementById("saveIndicator");
 const money_counter = document.getElementById("money");
 const money_button = document.getElementById("money_button");
 const cps_counter = document.getElementById("cps")
 const buildingContainer = document.querySelector(".buildings");
 const upgradesContainer = document.querySelector(".upgrades");
+const statsContainer = document.getElementById("statsContainer");
 const coinImg = document.getElementById("coinImg");
 let stats = [
     {
@@ -17,6 +19,10 @@ let stats = [
         name: "upgrades bought",
         value: 0,
         maxValue: 3
+    },
+    {
+        name: "rebirths",
+        value: 0
     }
 ]
 const shop_items_upgrades = [
@@ -131,13 +137,15 @@ let cps = 0;
 let itemsOwned = [];
 let clickValue = 1;
 createShopItems();
+updateStats();
+loadGame();
 
 function updateCoin(tier) {
     switch (tier) {
-        case tier = 1:
+        case 1:
             coinImg.src = "Imgs/Coin_1.png"
             break;
-        case tier = 2:
+        case 2:
             coinImg.src = "Imgs/Coin_2.png"
         default:
             break;
@@ -145,8 +153,9 @@ function updateCoin(tier) {
 }
 
 function button_click(){
-    money += clickValue
-    updateStats()
+    money += clickValue;
+    stats[0].value += clickValue;
+    updateStats();
 }
 
 function calcCps() {
@@ -158,6 +167,76 @@ function calcCps() {
     updateStats();
 }
 
+function resetProgress() {
+    if(confirm("do you want to reset all of your progress")) {
+        localStorage.removeItem("moneyClickerSave");
+        
+        money = 0;
+        clickValue = 1;
+        cps = 0;
+
+        stats.forEach(stat => {
+            stat.value = 0;
+        });
+
+        shop_items_buildings.forEach(bld => {
+            bld.amount = 0;
+            bld.cost = bld.startingCost;
+        });
+
+        shop_items_upgrades.forEach(upg => {
+            upg.owned = false;
+        });
+        updateCoin(0);
+        calcCps();
+        createShopItems();
+        updateStats();
+
+        console.log("game wiped");
+    }
+}
+function saveGame() {
+    const gameData = {
+        money: money,
+        stats: stats,
+        buildings: shop_items_buildings,
+        upgrades: shop_items_upgrades,
+        clickValue: clickValue
+    };
+    localStorage.setItem("moneyClickerSave", JSON.stringify(gameData));
+    if (savingIndicator) {
+        savingIndicator.classList.remove("hidden");
+        setTimeout(() => {
+            savingIndicator.classList.add("hidden");
+        },1000);
+    }
+}
+
+function loadGame() {
+    const save = localStorage.getItem("moneyClickerSave");
+
+    if (save) {
+        const data = JSON.parse(save);
+        money = data.money;
+        clickValue = data.clickValue;
+        stats = data.stats;
+
+        data.buildings.forEach((savedBld, index) => {
+            shop_items_buildings[index].amount = savedBld.amount;
+            shop_items_buildings[index].cost = savedBld.cost;
+
+        });
+
+        data.upgrades.forEach((savedUpg, index) => {
+            shop_items_upgrades[index].owned = savedUpg.owned;
+        });
+
+        calcCps();
+        createShopItems();
+        updateStats();
+    }
+}
+
 setInterval(() => {
     if (cps > 0) {
         money += cps;
@@ -166,6 +245,10 @@ setInterval(() => {
     }
 
 }, 1000)
+
+setInterval(() => {
+    saveGame();
+}, 30000)
 
 function createShopItems() {
     // delete upgrades
@@ -252,4 +335,11 @@ money_button.addEventListener('click', function(){
 function updateStats() {
     money_counter.textContent = Math.floor(money);
     cps_counter.textContent = cps.toFixed(1);
+    statsContainer.innerHTML = "";
+
+    stats.forEach((stat) => {
+        const statElement = document.createElement("p");
+        statElement.innerHTML = ` <strong>${stat.name}:</strong> ${Math.floor(stat.value)}`;
+        statsContainer.appendChild(statElement);
+    })
 }
