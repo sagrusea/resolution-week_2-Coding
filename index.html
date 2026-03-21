@@ -8,17 +8,22 @@
   </head>
   <body>
     <main class="game_layout">
-        <aside class="stats"></aside>
+        <aside class="stats">
+          <button>Rebirth<span id="rebirthAmount"></span></button>
+          <div id="progress"></div>
+        </aside>
         <section class="game_area">
+          <div id="moneyInfo">
             <p class="money">Money: $<span id="money">0</span></p>
-            <p><span id="cps"></span> Cps</p>
+            <p><span id="cps">0.0</span> Cps</p>
+          </div>
             <button class="selector" id="money_button">
                 <img id="coinImg" class="selector" src="./Imgs/Coin_0.png" alt="coin">
             </button>
         </section>
         <aside class="shop_area">
             <div class="upgrades"></div>
-            <hr>
+            <hr id="hrUpgrades">
             <div class="buildings"></div>
         </aside>
     </main>

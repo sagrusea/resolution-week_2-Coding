@@ -1,3 +1,13 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 #money_button {
     background: transparent;
     border: none;
@@ -18,8 +28,8 @@
     font-weight: bold;
     font-size: 4vh;
 }
-.selector {
-    user-drag: none;
+html, img {
+    -user-drag: none;
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
@@ -28,24 +38,46 @@
 }
 .game_layout {
     display: grid;
+    height: 100vh;
     grid-template-columns: 1fr 2fr 1fr;
-    gap: 20px;
     padding: 20px;
+    padding-top: 0;
     align-items: start;
 }
 .game_area {
     text-align: center;
+    background-image: url("./Imgs/coinBg.png");
+    height: 100%;
+}
+.shop_area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-left: 10px solid black;
+    background-image: url("./Imgs/shopBg.png");
+}
+#moneyInfo {
+    background-color: rgba(79, 79, 79, 0.653);
 }
 .upgrades {
+    flex-shrink: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     gap: 8px;
     padding: 10px;
 }
+.buildings {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-left: 5px;
+    padding-bottom: 30px;
+}
 .shop_building {
     padding: 5px;
     border: 1px solid brown;
     border-radius: 5px;
+    background-color: rgba(240, 248, 255, 0.529);
 }
 .shop-upgrade {
     width: 60px;
@@ -59,10 +91,29 @@
     width: 60px;
     height: 60px;
 }
+.buildingIcon {
+    width: 60px;
 
+}
+.icon:hover + .upgrade_tooltip {
+    display: block;
+    background-color: rgb(32, 32, 32);
+    color: aliceblue;
+    width: 200px;
+    padding: 4px;
+    position: absolute;
+    right: 25.2vw;
+    z-index: 10;
+}
 .upgrade_tooltip {
     display: none;
 }
-.upgrade_tooltip:hover {
-    display: block;
+.cantAfford {
+    filter: grayscale(1);
+    opacity: 0.70;
+    pointer-events: none;
+}
+.stats {
+    border-right: 10px solid black;
+    height: 100vh;
 }

@@ -25,7 +25,7 @@ const shop_items_upgrades = [
         description: "You take a sip and start being more efficient",
         effect: "clicks are twice as efficient",
         owned: false,
-        imgSrc: "./Imgs/coffe.png",
+        imgSrc: "./Imgs/upgrades/coffe.png",
         multi: 2,
         multiType: "clicks",
         cost: 10
@@ -38,7 +38,39 @@ const shop_items_upgrades = [
         imgSrc: "./Imgs/Coin_0.png",
         multi: 2,
         multiType: "clicks",
-        cost: 100
+        cost: 300
+    },
+    {
+        name: "Energy Drink",
+        description: "You took a sip and start feeling the caffeine rush",
+        effect: "clicks are three times as efficient",
+        owned: false,
+        imgSrc: "./Imgs/upgrades/energy.png",
+        multi: 3,
+        multiType: "clicks",
+        cost: 2000
+    },
+    {
+        name: "Sapphire coin",
+        description: "When looking at the ground you notice a strange coin you've never seen",
+        effect: "coin value 2x",
+        owned: false,
+        imgSrc: "./Imgs/Coin_1.png",
+        multi: 2,
+        multiType: "coin",
+        lvl: 1,
+        cost: 10000
+    },
+    {
+        name: "Ruby coin",
+        description: "none",
+        effect: "coin value 2x",
+        owned: false,
+        imgSrc: "./Imgs/Coin_2.png",
+        multi: 4,
+        multiType: "coin",
+        lvl: 2,
+        cost: 100000
     }
 ];
 const shop_items_buildings = [
@@ -46,47 +78,58 @@ const shop_items_buildings = [
         name: "Loose change Jar",
         description: "You found it under your couch. It should be enough.",
         effect: "Clicks 0.1/s",
+        imgSrc: "./Imgs/buildings/jar.png",
         cps: 0.1,
         cost: 10,
         startingCost: 10,
+        amount: 0,
     },
     {
         name: "Two-sided Coin",
         description: "Hold on, both sides are Heads?",
         effect: "5 Cps",
+        imgSrc: "./Imgs/buildings/coin.png",
         cps: 5,
-        cost: 50,
-        startingCost:50,
+        cost: 100,
+        startingCost: 100,
+        amount: 0,
     },
     {
         name: "Lemonade stand",
         description: "You start selling a refreshing yellow liquid. Made from lemons.",
         effect: "20Cps",
+        imgSrc: "./Imgs/buildings/lemon.png",
         cps: 20,
-        cost: 100,
-        startingCost:100,
+        cost: 300,
+        startingCost: 300,
+        amount: 0,
     },
     {
         name: "Vending Machine",
         description: "The sound of the coins clinging could be an ASMR",
         effect: "clicks are now more valuable",
+        imgSrc: "./Imgs/buildings/vending.png",
         cps: 50,
-        cost: 50,
-        startingCost:50,
+        cost: 1000,
+        startingCost: 1000,
+        amount: 0,
     },
     {
         name: "ATM",
         description: "Money shredder and printer? Yeah that's an ATM",
         effect: "clicks are now more valuable",
+        imgSrc: "./Imgs/buildings/atm.png",
         cps: 100,
-        cost: 50,
-        startingCost:50,
+        cost: 10000,
+        startingCost: 10000,
+        amount: 0,
     }
 ];
 let money = 0;
 let moneyMade = 0;
 let cps = 0;
 let itemsOwned = [];
+let clickValue = 1;
 createShopItems();
 
 function updateCoin(tier) {
@@ -102,24 +145,24 @@ function updateCoin(tier) {
 }
 
 function button_click(){
-    let clickValue = 1;
     money += clickValue
     updateStats()
 }
 
-setInterval(() => {
+function calcCps() {
     let totalCps = 0;
-    itemsOwned.forEach(ownedItem => {
-        buildingData = shop_items_buildings.find(b => b.name === ownedItem.name);
-        if (buildingData) {
-            totalCps += (buildingData.cps * ownedItem.amount);
-            updateStats();
-        }
+    shop_items_buildings.forEach(building => {
+        totalCps += (building.cps * building.amount);
     });
     cps = totalCps;
+    updateStats();
+}
+
+setInterval(() => {
     if (cps > 0) {
         money += cps;
         stats[0].value += cps;
+        updateStats();
     }
 
 }, 1000)
@@ -131,12 +174,14 @@ function createShopItems() {
     // create buildings
     shop_items_buildings.forEach((item) => {
         const shop_items_buildings = document.createElement("div");
-        shop_items_upgrades.className = "shop-building";
+        shop_items_buildings.className = "shop_building";
 
         shop_items_buildings.innerHTML = `
-            <div class="shop_building">
+            <img class="buildingIcon" src="${item.imgSrc}">
+            <div class="buidlingInfo">
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
+                <h2>${item.amount}</h2>
                 <button onclick="buyItem('${item.name}')">
                     Buy $${item.cost}
                 </button>
@@ -157,6 +202,7 @@ function createShopItems() {
                 <strong>${item.name}</strong><br>
                 ${item.description}<br>
                 <hr>
+                <p class="effect">"${item.effect}"</p>
                 Cost: $${item.cost}
             </div>
         `;
@@ -172,15 +218,11 @@ function buyItem(itemName) {
     if (building) {
         if (money >= building.cost) {
             money -= building.cost;
-            
-            const owned = itemsOwned.find((obj) => obj.name === building.name);
-            if (owned) {
-                owned.amount++
-            } else {
-                itemsOwned.push({ name: building.name, amount: 1});
-            }
+            building.amount++;
             building.cost = Math.floor(building.cost * 1.2);
+
             updateStats();
+            calcCps();
             createShopItems();
             }
 
@@ -189,6 +231,14 @@ function buyItem(itemName) {
             money -= upgrade.cost;
             upgrade.owned = true;
             stats.find(s => s.name === "upgrades bought").value++;
+            switch (upgrade.multiType) {
+                case "clicks":
+                    clickValue *= upgrade.multi;
+                    break;
+                case "coin":
+                    updateCoin(upgrade.lvl)
+                    break;
+            }
 
             updateStats();
             createShopItems();
