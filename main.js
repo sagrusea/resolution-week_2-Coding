@@ -194,7 +194,7 @@ function updateCoin(tier) {
 
 function button_click(){
     money += ((clickValue * coinValue) * rebirthMulti) + ((cpsPercent / 100) * cps);
-    stats[0].value += (clickValue * coinValue) * rebirthMulti;
+    stats[0].value += ((clickValue * coinValue) * rebirthMulti) + ((cpsPercent / 100) * cps);
     updateStats();
 }
 
@@ -216,6 +216,7 @@ function resetProgress() {
         cps = 0;
         coinValue = 1;
         rebirthMulti = 1;
+        cpsPercent = 0;
 
         stats.forEach(stat => {
             stat.value = 0;
@@ -246,6 +247,7 @@ function saveGame() {
         clickValue: clickValue,
         coinValue: coinValue,
         rebirthMulti: rebirthMulti,
+        cpsPercent: cpsPercent,
     };
     localStorage.setItem("moneyClickerSave", JSON.stringify(gameData));
     if (savingIndicator) {
@@ -266,6 +268,7 @@ function loadGame() {
         stats = data.stats;
         coinValue = data.coinValue;
         rebirthMulti = data.rebirthMulti;
+        cpsPercent = data.cpsPercent;
 
         data.buildings.forEach((savedBld, index) => {
             shop_items_buildings[index].amount = savedBld.amount;
