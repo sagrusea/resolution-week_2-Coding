@@ -172,7 +172,7 @@ let clickValue = 1;
 let coinValue = 1;
 let rebirthCost = 50000;
 let rebirthMulti = 1;
-let cpsPercent = 100;
+let cpsPercent = 0;
 createShopItems();
 updateStats();
 loadGame();
@@ -193,7 +193,7 @@ function updateCoin(tier) {
 }
 
 function button_click(){
-    money += ((clickValue * coinValue) * rebirthMulti) * ((cpsPercent * cps) / 100);
+    money += ((clickValue * coinValue) * rebirthMulti) + ((cpsPercent / 100) * cps);
     stats[0].value += (clickValue * coinValue) * rebirthMulti;
     updateStats();
 }
