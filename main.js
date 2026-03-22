@@ -88,7 +88,7 @@ const shop_items_upgrades = [
         imgSrc: "./Imgs/Coin_2.png",
         multiType: "clickcps",
         percent: 30,
-        cost: 2500
+        cost: 2500000
     }
 ];
 const shop_items_buildings = [
