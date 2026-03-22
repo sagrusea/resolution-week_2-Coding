@@ -66,7 +66,6 @@ const shop_items_upgrades = [
         effect: "coin value 2x",
         owned: false,
         imgSrc: "./Imgs/Coin_1.png",
-        multi: 2,
         multiType: "coin",
         lvl: 1,
         cost: 10000
@@ -77,10 +76,19 @@ const shop_items_upgrades = [
         effect: "coin value 2x",
         owned: false,
         imgSrc: "./Imgs/Coin_2.png",
-        multi: 4,
         multiType: "coin",
         lvl: 2,
         cost: 100000
+    },
+    {
+        name: "Golden mouse",
+        description: "Your old mouse is quite janky, but lucky you, theres a strange looking golden mouse on the ground!",
+        effect: "clicks gain 30% cps",
+        owned: false,
+        imgSrc: "./Imgs/Coin_2.png",
+        multiType: "clickcps",
+        percent: 30,
+        cost: 2500
     }
 ];
 const shop_items_buildings = [
@@ -164,6 +172,7 @@ let clickValue = 1;
 let coinValue = 1;
 let rebirthCost = 50000;
 let rebirthMulti = 1;
+let cpsPercent = 100;
 createShopItems();
 updateStats();
 loadGame();
@@ -184,7 +193,7 @@ function updateCoin(tier) {
 }
 
 function button_click(){
-    money += clickValue * coinValue;
+    money += ((clickValue * coinValue) * rebirthMulti) * ((cpsPercent * cps) / 100);
     stats[0].value += (clickValue * coinValue) * rebirthMulti;
     updateStats();
 }
@@ -362,6 +371,9 @@ function buyItem(itemName) {
                     break;
                 case "coin":
                     updateCoin(upgrade.lvl)
+                    break;
+                case "clickcps":
+                    cpsPercent += upgrade.percent;
                     break;
             }
 
